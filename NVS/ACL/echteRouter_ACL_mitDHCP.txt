@@ -1,0 +1,124 @@
+version 12.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+!
+memory-size iomem 5
+no aaa new-model
+ip subnet-zero
+!
+!
+ip cef
+ip dhcp excluded-address 192.168.236.1
+!
+ip dhcp pool DHCP_POELZL
+   network 192.168.16.0 255.255.255.192
+   default-router 192.168.16.1
+   dns-server 8.8.8.8
+!
+!
+ip ips po max-events 100
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no crypto isakmp ccm
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.16.1 255.255.255.192
+ ip access-group SURFING_POELZL in
+ ip access-group BROWSING_POELZL out
+ ip nat inside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address dhcp
+ ip nat outside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ no fair-queue
+ clockrate 2000000
+!
+interface Serial0/2/0
+ no ip address
+ shutdown
+ clockrate 2000000
+!
+interface Serial0/2/1
+ no ip address
+ shutdown
+ clockrate 2000000
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 FastEthernet0/1
+ip route 0.0.0.0 0.0.0.0 192.168.55.1
+!
+!
+ip http server
+no ip http secure-server
+ip nat inside source list NAT_POELZL interface FastEthernet0/1 overload
+!
+ip access-list standard NAT_POELZL
+ permit 192.168.16.0 0.0.0.63
+!
+ip access-list extended BROWSING_POELZL
+ permit tcp any any established
+ permit icmp any any echo-reply
+ permit udp any any eq bootpc
+ permit udp any any eq bootps
+ip access-list extended SURFING_POELZL
+ permit tcp 192.168.16.0 0.0.0.63 any eq www
+ permit tcp 192.168.16.0 0.0.0.63 any eq 443
+ permit tcp 192.168.16.0 0.0.0.63 any eq ftp
+ permit icmp 192.168.16.0 0.0.0.63 any echo
+ permit udp any any eq bootpc
+ permit udp any any eq bootps
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+scheduler allocate 20000 1000
