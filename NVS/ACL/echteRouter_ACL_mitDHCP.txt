@@ -15,7 +15,7 @@ ip subnet-zero
 !
 !
 ip cef
-ip dhcp excluded-address 192.168.236.1
+ip dhcp excluded-address 192.168.16.1
 !
 ip dhcp pool DHCP_POELZL
    network 192.168.16.0 255.255.255.192
@@ -45,7 +45,7 @@ no crypto isakmp ccm
 !
 !
 !
-interface FastEthernet0/0
+interface GigabitEthernet0/0
  ip address 192.168.16.1 255.255.255.192
  ip access-group SURFING_POELZL in
  ip access-group BROWSING_POELZL out
@@ -54,7 +54,7 @@ interface FastEthernet0/0
  duplex auto
  speed auto
 !
-interface FastEthernet0/1
+interface GigabitEthernet0/1
  ip address dhcp
  ip nat outside
  ip virtual-reassembly
@@ -78,8 +78,7 @@ interface Serial0/2/1
  clockrate 2000000
 !
 ip classless
-ip route 0.0.0.0 0.0.0.0 FastEthernet0/1
-ip route 0.0.0.0 0.0.0.0 192.168.55.1
+
 !
 !
 ip http server
